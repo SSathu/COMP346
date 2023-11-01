@@ -147,20 +147,22 @@ public class Account {
 		// do not remove or modify any of the following 3 statements
 		
 		
-		double k = 999999999;
+		
+			synchronized(this){
+				double k = 999999999;
 		for(int i=0;i<100;i++)
 			k = k / 2;
 
-			synchronized(this){
 				balance = balance + amount;
+					k = 999999999;
+		for(int i=0;i<100;i++)
+			k = k / 2;
+
 			}
 
 		// Waste some time doing fake computations
 		// do not remove or modify any of the following 3 statements
-		k = 999999999;
-		for(int i=0;i<100;i++)
-			k = k / 2;
-
+	
 	}
 
 	/**
@@ -171,17 +173,22 @@ public class Account {
 
 		// Waste some time doing fake computations
 		// do not remove or modify any of the following 3 statements
-		double k = 999999999;
+	
+			synchronized(this){
+
+					double k = 999999999;
 		for(int i=0;i<100;i++)
 			k = k / 2;
-			synchronized(this){
+
 			balance = balance - amount;
+
+				k = 999999999;
+		for(int i=0;i<100;i++)
+			k = k / 2;
 			}
 		// Waste some time doing fake computations
 		// do not remove or modify any of the following 3 statements
-		k = 999999999;
-		for(int i=0;i<100;i++)
-			k = k / 2;
+	
 	}
 	
 
