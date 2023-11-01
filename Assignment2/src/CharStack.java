@@ -13,7 +13,8 @@ public class CharStack {
             */
             private static int iSize = DEFAULT_SIZE;
             private static int iTop = 3; // stack[0:9] with four defined values
-            private static char aCharStack[] = new char[]  {�a�, �b�, �c�, �d�, �$�, �$�,�$�,�$�,�$�,�$�};
+            private static char aCharStack[] = new char[]  {'a', 'b', 'c','d', '$', '$','$','$','$','$'};
+            static int accessCounter = 0;
            // Default constructor
            public CharStack()
            {
@@ -30,13 +31,18 @@ public class CharStack {
                             // Fill in with letters of the alphabet and keep
                             // 6 free blocks
                             for(int i = 0; i < piSize - 6; i++)
-                                       this.aCharStack[i] = (char)(�a� + i);
+                                       this.aCharStack[i] = (char)('a' + i);
                        for (int i = 1; i <= 6; i++)
-                                       this.aCharStack[piSize - i] = �$�;
+                                       this.aCharStack[piSize - i] = '$';
                             this.iTop = piSize - 7;
                             this.iSize = piSize;
                   }
            }
+           public int getAccessCounter() {
+            return this.accessCounter;
+        }
+
+
           /*
           * Picks a value from the top without modifying the stack
          */
@@ -44,6 +50,7 @@ public class CharStack {
           {
                   if (iTop == -1)
                             throw new CharStackEmptyException();
+                            accessCounter++;
                   return aCharStack[iTop];
            }
           /*
@@ -53,6 +60,7 @@ public class CharStack {
           {
                   if (piPosition < 0 || piPosition >= iSize)
                          throw new CharStackInvalidAceessException();
+                         accessCounter++; 
                   return this.aCharStack[piPosition];
            }
            /*
@@ -62,6 +70,7 @@ public class CharStack {
            {
                    if (iTop == iSize -1)
                             throw new CharStackFullException();
+                            accessCounter++;
                    aCharStack[++iTop] = pcChar;
            }
            /*
@@ -72,7 +81,8 @@ public class CharStack {
                     if (iTop == -1)
                             throw new CharStackEmptyException();
                    char cChar = aCharStack[iTop];
-                   aCharStack[iTop--] = �$�; // Leave prev. value undefined
+                   aCharStack[iTop--] = '$'; // Leave prev. value undefined
+                   accessCounter++;
                    return cChar;
             }
            /* Getters */

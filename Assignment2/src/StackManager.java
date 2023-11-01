@@ -1,4 +1,5 @@
-import CharStackExceptions.CharStackEmptyException;
+import CharStackExceptions.*;
+
 
 public class StackManager {
               // The Stack
@@ -85,10 +86,16 @@ public class StackManager {
                     public void run()
                     {
                                  System.out.println ("Consumer thread [TID=" + this.iTID + "] starts executing.");
-                                 for (int i = 0; i < StackManager.iThreadSteps; i++)  {
+                                 for (int i = 0; i < 3; i++)  {
                                           // Insert your code in the following:
                                         // ...
                                         // ...
+                                        try {
+                                            char topStack = stack.pop(); 
+                                        } catch (CharStackEmptyException e) {
+                                            e.printStackTrace();
+                                        }
+
                                          System.out.println("Consumer thread [TID=" + this.iTID + "] pops character =" + this.copy);
                                  }
                                  System.out.println ("Consumer thread [TID=" + this.iTID + "] terminates.");
@@ -103,10 +110,23 @@ public class StackManager {
                         public void run()
                         {
                                    System.out.println ("Producer thread [TID=" + this.iTID + "] starts executing.");
-                                   for (int i = 0; i < StackManager.iThreadSteps; i++)  {
+                                   for (int i = 0; i < 3; i++)  {
                                             // Insert your code in the following:
                                            // ...
-                                           //...
+                                           //...                            
+                                    try {
+                                        char topStack = stack.pick();
+                                        char nextChar = (char)(topStack+1);
+
+                                        stack.push(nextChar);
+
+                                    } catch (CharStackEmptyException csee) {
+                                        csee.printStackTrace();
+                                    }catch (CharStackFullException csfe) {
+                                        csfe.printStackTrace();
+            }
+                                    
+                                    
                                    System.out.println("Producer thread [TID=" + this.iTID + "] pushes character =" + this.block);
                                    }
                                   System.out.println("Producer thread [TID=" + this.iTID + "] terminates.");
@@ -120,13 +140,23 @@ public class StackManager {
                         public void run()
                         {
                                   System.out.println("CharStackProber thread [TID=" + this.iTID + "] starts executing.");
-                                  for (int i = 0; i < 2 * StackManager.iThreadSteps; i++)
-                                  {
-                                           // Insert your code in the following. Note that the stack state must be
-                                           // printed in the required format.
-                                          // ...
-                                          // ...
-                                  }
+                                  for (int i = 0; i < 6; i++) {
+                                    System.out.print("Stack S = (");
+                                    for (int j = 0; j < stack.getSize(); j++) {
+                                        char value;
+                                        try {
+                                            value = stack.getAt(j);
+                                        } catch (CharStackInvalidAceessException e) {
+                                            e.getMessage();
+                                            break;
+                                        }
+                                        System.out.print("[" + value + "]");
+                                        if (j != stack.getSize() - 1) {
+                                            System.out.print(",");
+                                        }
+                                    }
+                                    System.out.println(")");
                         }
               } // class CharStackProber
+}
 }

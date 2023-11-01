@@ -1,4 +1,4 @@
-public class BaseThread {
+public class BaseThread extends Thread{
            /*
          * Data members
         */
