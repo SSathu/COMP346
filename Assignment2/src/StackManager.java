@@ -86,7 +86,6 @@ public class StackManager {
            {
                     private char copy;
                     public void run()
-<<<<<<< HEAD
                     {            
                                 while(orderSem.value != 2){System.out.print("");}
                                
@@ -102,26 +101,6 @@ public class StackManager {
                                             stackSem.Signal();
                                         }
 
-=======
-                    {
-                                 try {
-                                  // Wait for both producers to complete
-                                  producerSemaphore.acquire();
-                                  producerSemaphore.acquire();
-                  
-                                  for (int i = 0; i < 6; i++) {
-                                      mutex.acquire();
-                                      char c = stack.pop();
-                                      System.out.println("Consumer thread [TID=" + this.iTID + "] pops character = " + c);
-                                      mutex.release();
-                  
-                                      // Signal that a consumer has completed
-                                      consumerSemaphore.release();
-                                  }
-                              } catch (Exception e) {
-                                  e.printStackTrace();
-                              }
->>>>>>> 0e43ad25412a90b752e32ff4c789352e6184ac03
                                          System.out.println("Consumer thread [TID=" + this.iTID + "] pops character =" + this.copy);
                                          
                                  }
@@ -145,21 +124,10 @@ public class StackManager {
                                    for (int i = 0; i < 3; i++)  {
                                     
                                     try {
-<<<<<<< HEAD
                                         char topStack = CharStack.pick();
                                         char nextChar = (char)(topStack+1);
                                         block = nextChar;
                                         CharStack.push(nextChar);
-=======
-                                        mutex.acquire();
-                                          char topChar = stack.pick();
-                                          char nextChar = (char)(topChar + 1);
-                                          stack.push(nextChar);
-                                          System.out.println("Producer thread [TID=" + this.iTID + "] pushes character = " + nextChar);
-                                          mutex.release();
-                                          producerSemaphore.release(); 
-
->>>>>>> 0e43ad25412a90b752e32ff4c789352e6184ac03
                                     } catch (CharStackEmptyException csee) {
                                         csee.getMessage();
                                     }catch (CharStackFullException csfe) {
