@@ -1,5 +1,5 @@
 public class Semaphore {
-    private int value;
+    public int value;
          public Semaphore(int value)
          {
             if(value < 0){ throw new IllegalArgumentException("Initializing with Negative Semaphore Value");}

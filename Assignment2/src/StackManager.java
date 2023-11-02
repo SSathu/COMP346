@@ -7,9 +7,11 @@ public class StackManager {
               private static final int NUM_ACQREL = 4; // Number of Producer/Consumer threads
               private static final int NUM_PROBERS = 1; // Number of threads dumping stack
               private static int iThreadSteps = 3; // Number of steps they take
-             // Semaphore declarations. Insert your code in the following:
-             //...
-             //...
+              // Semaphores for Sync
+              private static Semaphore stackSem = new Semaphore(1);
+              private static Semaphore orderSem = new Semaphore(0);
+              
+
              // The main()
              public static void main(String[] argv)
              {
@@ -82,54 +84,64 @@ public class StackManager {
            */
            static class Consumer extends BaseThread
            {
-                    private char copy; // A copy of a block returned by pop()
+                    private char copy;
                     public void run()
-                    {
+                    {            
+                                while(orderSem.value != 2){System.out.print("");}
+                               
                                  System.out.println ("Consumer thread [TID=" + this.iTID + "] starts executing.");
                                  for (int i = 0; i < 3; i++)  {
-                                          // Insert your code in the following:
-                                        // ...
-                                        // ...
                                         try {
-                                            char topStack = stack.pop(); 
+                                            stackSem.Wait();
+                                            char topStack = CharStack.pop(); 
+                                            copy = topStack;
                                         } catch (CharStackEmptyException e) {
                                             e.printStackTrace();
+                                        }finally{
+                                            stackSem.Signal();
                                         }
 
                                          System.out.println("Consumer thread [TID=" + this.iTID + "] pops character =" + this.copy);
+                                         
                                  }
                                  System.out.println ("Consumer thread [TID=" + this.iTID + "] terminates.");
+                                
                         }
              } // class Consumer
               /*
              * Inner class Producer
               */
              static class Producer extends BaseThread
-             {
-                        private char block; // block to be returned
+             {          
+                        
+                        private char block; 
                         public void run()
-                        {
+                        {          
+
                                    System.out.println ("Producer thread [TID=" + this.iTID + "] starts executing.");
+                                   stackSem.Wait();
+
                                    for (int i = 0; i < 3; i++)  {
-                                            // Insert your code in the following:
-                                           // ...
-                                           //...                            
+                                    
                                     try {
-                                        char topStack = stack.pick();
+                                        char topStack = CharStack.pick();
                                         char nextChar = (char)(topStack+1);
-
-                                        stack.push(nextChar);
-
+                                        block = nextChar;
+                                        CharStack.push(nextChar);
                                     } catch (CharStackEmptyException csee) {
-                                        csee.printStackTrace();
+                                        csee.getMessage();
                                     }catch (CharStackFullException csfe) {
-                                        csfe.printStackTrace();
-            }
+                                        csfe.getMessage();
+                                    }finally{
+                                        
+                                    }
                                     
                                     
                                    System.out.println("Producer thread [TID=" + this.iTID + "] pushes character =" + this.block);
                                    }
+                                   stackSem.Signal();
                                   System.out.println("Producer thread [TID=" + this.iTID + "] terminates.");
+                                  orderSem.Signal();
                         }
              } // class Producer
                /*
@@ -138,8 +150,10 @@ public class StackManager {
               static class CharStackProber extends BaseThread
               {
                         public void run()
-                        {
+                        {         
+                                  
                                   System.out.println("CharStackProber thread [TID=" + this.iTID + "] starts executing.");
+                                  stackSem.Wait();
                                   for (int i = 0; i < 6; i++) {
                                     System.out.print("Stack S = (");
                                     for (int j = 0; j < stack.getSize(); j++) {
@@ -157,6 +171,7 @@ public class StackManager {
                                     }
                                     System.out.println(")");
                         }
+                        stackSem.Signal();
               } // class CharStackProber
 }
 }
