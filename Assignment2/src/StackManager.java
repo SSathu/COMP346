@@ -85,17 +85,23 @@ public class StackManager {
                     private char copy; // A copy of a block returned by pop()
                     public void run()
                     {
-                                 System.out.println ("Consumer thread [TID=" + this.iTID + "] starts executing.");
-                                 for (int i = 0; i < 3; i++)  {
-                                          // Insert your code in the following:
-                                        // ...
-                                        // ...
-                                        try {
-                                            char topStack = stack.pop(); 
-                                        } catch (CharStackEmptyException e) {
-                                            e.printStackTrace();
-                                        }
-
+                                 try {
+                                  // Wait for both producers to complete
+                                  producerSemaphore.acquire();
+                                  producerSemaphore.acquire();
+                  
+                                  for (int i = 0; i < 6; i++) {
+                                      mutex.acquire();
+                                      char c = stack.pop();
+                                      System.out.println("Consumer thread [TID=" + this.iTID + "] pops character = " + c);
+                                      mutex.release();
+                  
+                                      // Signal that a consumer has completed
+                                      consumerSemaphore.release();
+                                  }
+                              } catch (Exception e) {
+                                  e.printStackTrace();
+                              }
                                          System.out.println("Consumer thread [TID=" + this.iTID + "] pops character =" + this.copy);
                                  }
                                  System.out.println ("Consumer thread [TID=" + this.iTID + "] terminates.");
@@ -115,10 +121,13 @@ public class StackManager {
                                            // ...
                                            //...                            
                                     try {
-                                        char topStack = stack.pick();
-                                        char nextChar = (char)(topStack+1);
-
-                                        stack.push(nextChar);
+                                        mutex.acquire();
+                                          char topChar = stack.pick();
+                                          char nextChar = (char)(topChar + 1);
+                                          stack.push(nextChar);
+                                          System.out.println("Producer thread [TID=" + this.iTID + "] pushes character = " + nextChar);
+                                          mutex.release();
+                                          producerSemaphore.release(); 
 
                                     } catch (CharStackEmptyException csee) {
                                         csee.printStackTrace();
