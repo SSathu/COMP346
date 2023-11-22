@@ -94,5 +94,4 @@ public class DiningPhilosophers
 		poException.printStackTrace(System.err);
 	}
 }
-
 // EOF
