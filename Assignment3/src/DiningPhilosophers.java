@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 /**
  * Class DiningPhilosophers    
  * The main starter.
@@ -48,6 +50,24 @@ public class DiningPhilosophers
 			 */
 			int iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
 
+			Scanner scan = new Scanner(System.in);
+			System.out.println("Input the number of philosophers:");
+			String input = scan.next();
+
+			if(input != ""){
+				try{
+					iPhilosophers = Integer.parseInt(input);
+				}catch(NumberFormatException e){
+						System.out.println("% java DiningPhilosophers -7.a\r\n" + //
+											"\"-7.a\" is not a positive decimal integer\r\n" + //
+											"Usage: java DiningPhilosophers [NUMBER_OF_PHILOSOPHERS] %");
+				}
+			}else{
+				iPhilosophers = DEFAULT_NUMBER_OF_PHILOSOPHERS;
+			}
+			
+			
+			
 			// Make the monitor aware of how many philosophers there are
 			soMonitor = new Monitor(iPhilosophers);
 

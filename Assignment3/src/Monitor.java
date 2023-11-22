@@ -12,6 +12,7 @@ public class Monitor
 	 * ------------
 	 */
 	private int numberOfPhilosophers;
+	private boolean[] isEating;
     private boolean[] chopsticks;
     private boolean isTalking;
 
@@ -23,10 +24,12 @@ public class Monitor
 		// Number of philo = nb of chopsticks
 		numberOfPhilosophers = piNumberOfPhilosophers;
         chopsticks = new boolean[numberOfPhilosophers];
+		isEating = new boolean[numberOfPhilosophers];
 
 		// Setting all chopsticks to be usable
         for (int i = 0; i < numberOfPhilosophers; i++) {
             chopsticks[i] = true;
+			isEating[i] = false;
         }
 
 		// no philosoper is talking
@@ -60,6 +63,7 @@ public class Monitor
 		// Both  are available so set availability of those chopsticks to false   
 		chopsticks[leftChopstick] = false;
         chopsticks[rightChopstick] = false;
+		isEating[piTID-1] = true;
 
 	}
 
@@ -76,7 +80,7 @@ public class Monitor
         //Making used chopsticks available
         chopsticks[leftChopstick] = true;
         chopsticks[rightChopstick] = true;
-
+		isEating[piTID-1] = false;
         // Notify
         notifyAll();
 	}
@@ -87,7 +91,14 @@ public class Monitor
 	 */
 	public synchronized void requestTalk()
 	{
-		
+		while(isTalking){
+			try{
+				wait();
+			}catch(InterruptedException e){
+				e.printStackTrace();
+			}
+		}
+		isTalking = true;
 	}
 
 	/**
@@ -96,7 +107,8 @@ public class Monitor
 	 */
 	public synchronized void endTalk()
 	{
-		// ...
+		isTalking = false;
+		notifyAll();
 	}
 }
 
